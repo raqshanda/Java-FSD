@@ -12,14 +12,14 @@ public class ABCBank implements Bank{
 	}
 
 	@Override
-	public void withdraw(double amount,String type) {
+	public void withdraw(double amount,String type) throws InsufficientAmountException {
 		// TODO Auto-generated method stub
 		if(amount>balance) {
-			System.out.println( "Insufficient Balance");
+			throw new InsufficientAmountException("Insufficient Funds");
 		}
 		else {
 		if(type.equalsIgnoreCase("s")&&amount>5000)
-			System.out.println("Withdraw Attempt Failed");
+			throw new InsufficientAmountException("Withdraw Attempt Failed");
 		else if(type.equalsIgnoreCase("c"))
 				balance -= amount;
 		else 
@@ -35,7 +35,12 @@ public class ABCBank implements Bank{
 	@Override
 	public void customerDetails(int num,String type) {
 		// TODO Auto-generated method stub
-		System.out.println("Account Number:"+num+"\nAccount Type:"+type+"\nBalance:"+balance);
+		System.out.println("Account Number:"+num);
+		if(type.equalsIgnoreCase("c"))
+			System.out.println("Account Type: Current");
+		else
+			System.out.println("Account Type: Savings");
+		System.out.println("Balance:"+balance);
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -44,6 +49,21 @@ public class ABCBank implements Bank{
 		int num = scan.nextInt();
 		System.out.println("Enter Account Type: ");
 		String type = scan.next();
+		while(true)
+		{
+		
+			if(!(type.equalsIgnoreCase("s")||type.equalsIgnoreCase("c")))
+		{
+			System.out.println("Account type can only be Savings or Current");
+			System.out.print("Enter Account Type:");
+			type = scan.next();
+				
+		}
+			else 
+			break;
+		}
+		
+		
 		ABCBank obj=new ABCBank();
 		while(true) {
 			
@@ -64,7 +84,12 @@ public class ABCBank implements Bank{
 			case 2:
 				System.out.println("Enter Amount to withdraw");
 				double withdraw=scan.nextDouble();
-				obj.withdraw(withdraw,type);
+				try {
+					obj.withdraw(withdraw,type);
+				} catch (InsufficientAmountException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.getMessage());
+				}
 				break;
 			case 3:
 				System.out.println(obj.getBalance());
